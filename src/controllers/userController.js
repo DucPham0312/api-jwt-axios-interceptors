@@ -32,13 +32,15 @@ const login = async (req, res) => {
     const accessToken = await JwtProvider.generateToken(
       userInfo,
       ACCESS_TOKEN_SECRET_SIGNATURE,
-      '1h'
+      // '1h'
+      5
     )
 
     const refreshToken = await JwtProvider.generateToken(
       userInfo,
       REFRESH_TOKEN_SECRET_SIGNATURE,
-      '7 days'
+      // '7 days'
+      15
     )
 
 
@@ -89,15 +91,15 @@ const logout = async (req, res) => {
 const refreshToken = async (req, res) => {
   try {
     //Cách 1: Lấy luôn từ Cookie đã đính kèm vào request
-    // const refeshTokenFromCookie = req.cookie?.refreshToken
+    const refeshTokenFromCookie = req.cookies?.refreshToken
 
     //Cách 2: Từ LocalStorage phía FE sẽ truyền vào body khi gọi api
-    const refeshTokenFromBody = req.body?.refreshToken
+    // const refeshTokenFromBody = req.body?.refreshToken
 
     //Verify/ giải mã refresh token xem có hợp lệ hay không
     const refreshTokenDecoded = await JwtProvider.verifyToken(
-      // refeshTokenFromCookie, //cach1
-      refeshTokenFromBody, //cach2
+      refeshTokenFromCookie, //cach1
+      // refeshTokenFromBody, //cach2
       REFRESH_TOKEN_SECRET_SIGNATURE
     )
     // console.log(refreshTokenDecoded)
@@ -112,7 +114,8 @@ const refreshToken = async (req, res) => {
     const accessToken = await JwtProvider.generateToken(
       userInfo,
       ACCESS_TOKEN_SECRET_SIGNATURE,
-      '1h'
+      // '1h'
+      5
     )
 
     //Res lại cookie accessToken mới cho TH sử dụng cookie
